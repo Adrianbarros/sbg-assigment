@@ -99,18 +99,21 @@ const App: React.FC = () => {
     };
 
     const deleteTodo = async (id: string) => {
-        const updatedTodos = todos.filter((todo) => todo.id !== id);
-        setTodos(updatedTodos);
-
         setLoading(true);
+
         try {
-            await axios.delete(`${API_URL}/${id}`, {
+            await axios.delete(API_URL, {
+                data: { id },
                 headers: {
                     'Content-Type': 'application/json',
                 },
             });
+
+            const updatedTodos = todos.filter((todo) => todo.id !== id);
+            setTodos(updatedTodos);
             setSuccessMessage('Task deleted successfully!');
-            setError(null);
+            setError(null); // Clear any previous errors
+
         } catch (error) {
             setError('Error deleting task. Please try again.');
             console.error('Error deleting todo:', error);
