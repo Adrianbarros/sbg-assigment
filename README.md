@@ -4,6 +4,7 @@ Hello to the team at SBG Funding! Here is a bit of the overview of my porject an
 
 I left the link for my backend just in case but feel free to use the lambda to use yours. I also needed some manual chnages for the AWS API gateway so results may vary. Please contact me if there are any questions or discrepancy with my resultts and your local machine.
 
+
 ## Technologies Used
 
 ![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
@@ -114,19 +115,13 @@ The backend provides the following API endpoints:
     - Request body: JSON object with `id`, `task`, and `completed` fields.
     - Response: `201 Created` with the created to-do item.
 
-- **PUT /todos/{id}**
+- **PUT /todos**
     - Update an existing to-do item.
     - Request body: JSON object with `task` and `completed` fields.
     - Response: `200 OK` with the updated to-do item.
 
-- **DELETE /todos/{id}**
+- **DELETE /todos**
     - Delete a to-do item.
     - Response: `200 OK` with a message indicating the item was deleted.
 
-## Contributing
 
-If you would like to contribute to this project, please fork the repository and submit a pull request with your changes.
-
-## License
-
-This project is licensed under the MIT License.
