@@ -2,6 +2,8 @@
 
 Hello to the team at SBG Funding! Here is a bit of the overview of my porject and how to run it. The backend and API will be hosted and the only requirement will be the front end. I wish I had more time to make it better looking but I did my best to show some nice code.
 
+I left the link for my backend just in case but feel free to use the lambda to use yours. I also needed some manual chnages for the AWS API gateway so results may vary. Please contact me if there are any questions or discrepancy with my resultts and your local machine.
+
 ## Technologies Used
 
 ![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
@@ -38,7 +40,7 @@ Before you begin, ensure you have the following installed on your machine:
 2. **Install dependencies:**
 
     ```bash
-    yarn install
+    npm install
     ```
 
 3. **Deploy the AWS Lambda function:**
@@ -46,7 +48,7 @@ Before you begin, ensure you have the following installed on your machine:
     Ensure you have the AWS CLI configured with the necessary permissions to deploy Lambda functions and create DynamoDB tables.
 
     ```bash
-    yarn deploy
+    cdk deploy
     ```
 
     This command should deploy your Lambda function and set up the necessary DynamoDB table.
@@ -65,7 +67,17 @@ Before you begin, ensure you have the following installed on your machine:
     yarn install
     ```
 
-3. **Start the development server:**
+3. **Set up environment variables:**
+
+    Create a `.env` file in the root of the frontend directory and add the following line:
+
+    ```env
+    REACT_APP_API_URL=https://erggojv4mj.execute-api.us-east-2.amazonaws.com/prod/todos
+    ```
+
+    Replace the URL with your backend endpoint
+
+4. **Start the development server:**
 
     ```bash
     yarn start

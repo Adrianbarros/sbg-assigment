@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import {
     Container,
     TextField,
@@ -12,8 +11,7 @@ import {
 } from '@mui/material';
 import Item from '../components/items'; // Import the Item component
 import { ItemType } from '../types';
-
-const API_URL = 'https://erggojv4mj.execute-api.us-east-2.amazonaws.com/prod/todos';
+import { fetchTodos, addTodo, toggleTodo, deleteTodo } from '../utils/requests'; // Import API functions
 
 const App: React.FC = () => {
     const [task, setTask] = useState('');
@@ -24,24 +22,23 @@ const App: React.FC = () => {
 
     // Fetch Todos on component mount
     useEffect(() => {
-        fetchTodos();
+        const fetchData = async () => {
+            setLoading(true);
+            try {
+                const todos = await fetchTodos();
+                setTodos(todos);
+                setError(null); // Clear any previous errors
+            } catch (error) {
+                setError('Error fetching todos. Please try again.');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
     }, []);
 
-    const fetchTodos = async () => {
-        setLoading(true);
-        try {
-            const response = await axios.get(API_URL);
-            setTodos(response.data);
-            setError(null); // Clear any previous errors
-        } catch (error) {
-            setError('Error fetching todos. Please try again.');
-            console.error('Error fetching todos:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const addTodo = async () => {
+    const handleAddTodo = async () => {
         if (!task.trim()) {
             alert('Please enter a task');
             return;
@@ -55,24 +52,19 @@ const App: React.FC = () => {
 
         setLoading(true);
         try {
-            await axios.post(API_URL, newTodo, {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
+            await addTodo(newTodo);
             setTodos([...todos, newTodo]);
             setTask(''); // Clear the input field
             setSuccessMessage('Task added successfully!');
             setError(null);
         } catch (error) {
             setError('Error adding task. Please try again.');
-            console.error('Error adding todo:', error);
         } finally {
             setLoading(false);
         }
     };
 
-    const toggleTodo = async (id: string) => {
+    const handleToggleTodo = async (id: string) => {
         const updatedTodos = todos.map((todo) =>
             todo.id === id ? { ...todo, completed: !todo.completed } : todo
         );
@@ -82,41 +74,27 @@ const App: React.FC = () => {
         if (updatedTodo) {
             setLoading(true);
             try {
-                await axios.put(API_URL, updatedTodo, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                });
+                await toggleTodo(updatedTodo);
                 setSuccessMessage('Task updated successfully!');
                 setError(null);
             } catch (error) {
                 setError('Error updating task. Please try again.');
-                console.error('Error updating todo:', error);
             } finally {
                 setLoading(false);
             }
         }
     };
 
-    const deleteTodo = async (id: string) => {
+    const handleDeleteTodo = async (id: string) => {
         setLoading(true);
-
         try {
-            await axios.delete(API_URL, {
-                data: { id },
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-
+            await deleteTodo(id);
             const updatedTodos = todos.filter((todo) => todo.id !== id);
             setTodos(updatedTodos);
             setSuccessMessage('Task deleted successfully!');
-            setError(null); // Clear any previous errors
-
+            setError(null);
         } catch (error) {
             setError('Error deleting task. Please try again.');
-            console.error('Error deleting todo:', error);
         } finally {
             setLoading(false);
         }
@@ -138,7 +116,7 @@ const App: React.FC = () => {
                 <Button
                     variant="contained"
                     color="primary"
-                    onClick={addTodo}
+                    onClick={handleAddTodo}
                     style={styles.button}
                     disabled={loading}
                 >
@@ -153,8 +131,8 @@ const App: React.FC = () => {
                     <Item
                         key={todo.id}
                         {...todo}
-                        onToggle={toggleTodo}
-                        onDelete={deleteTodo}
+                        onToggle={handleToggleTodo}
+                        onDelete={handleDeleteTodo}
                     />
                 ))}
             </List>
